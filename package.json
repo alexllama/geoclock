@@ -1,0 +1,24 @@
+{
+  "name": "geoclock",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A browser-based Geochron-style world clock: live day/night terminator on a scrolling world map.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "maplibre-gl": "^6.14.0",
+    "satellite.js": "^7.1.0",
+    "suncalc": "^2.1.1",
+    "tz-lookup": "^6.1.25"
+  },
+  "devDependencies": {
+    "@types/suncalc": "^1.9.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
+  }
+}
