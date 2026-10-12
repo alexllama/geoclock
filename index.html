@@ -13,11 +13,6 @@
   </head>
   <body>
     <div id="app" class="app">
-      <header class="topbar">
-        <h1 class="wordmark">Geoclock</h1>
-        <p class="tagline">live world day / night map</p>
-      </header>
-
       <div class="machine">
         <div class="stage">
           <div class="band">
@@ -26,33 +21,63 @@
           <div id="world" class="world">
             <svg id="map-svg" class="map-svg" viewBox="0 0 2048 1024" preserveAspectRatio="none"></svg>
             <svg id="overlay" class="overlay" preserveAspectRatio="none"></svg>
+
+            <div class="readout">
+              <div id="date" class="date"></div>
+              <div class="clock-block">
+                <div class="clock-label">Local</div>
+                <div id="local-time" class="clock-time">--:--:--</div>
+                <div id="local-zone" class="clock-zone"></div>
+              </div>
+              <div class="clock-block">
+                <div class="clock-label">UTC</div>
+                <div id="utc-time" class="clock-time">--:--</div>
+                <div class="clock-zone"></div>
+              </div>
+
+              <div class="map-controls">
+                <div class="info">
+                  <button id="info-btn" class="icon-btn" type="button" aria-label="About this map" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8" />
+                      <circle cx="12" cy="7.7" r="1.25" fill="currentColor" />
+                      <rect x="11" y="10.4" width="2" height="6.6" rx="1" fill="currentColor" />
+                    </svg>
+                  </button>
+                  <div id="info-pop" class="info-pop" hidden>
+                    <h2>About this map</h2>
+                    <p>
+                      Imagery: <a href="https://earthdata.nasa.gov/gibs" rel="noopener">NASA GIBS</a> — Blue Marble (day) and
+                      Black Marble / VIIRS city lights (night).
+                    </p>
+                    <p>
+                      Country outlines: <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a> (public domain).
+                    </p>
+                    <p>Time-zone lookup: tz-lookup (CC0). Solar position: SunCalc (BSD-2).</p>
+                  </div>
+                </div>
+
+                <button id="tooltip-toggle" class="icon-btn" type="button" aria-label="Toggle location tooltip" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 3v12l3.1-3.1h5.4L6 3Z" fill="currentColor" />
+                  </svg>
+                </button>
+
+                <button id="basemap-toggle" class="icon-btn" type="button" aria-label="Switch base map" aria-pressed="true">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3 3 7.5 12 12l9-4.5L12 3Z" fill="currentColor" />
+                    <path d="M3 12.2 12 16.7l9-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    <path d="M3 16.4 12 20.9l9-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             <div id="hover" class="hover"></div>
             <div id="err" class="err" hidden></div>
           </div>
         </div>
-
-        <div class="readout">
-          <div id="date" class="date"></div>
-          <div class="clock-block">
-            <div class="clock-label">Local</div>
-            <div id="local-time" class="clock-time">--:--:--</div>
-            <div id="local-zone" class="clock-zone"></div>
-          </div>
-          <div class="clock-block">
-            <div class="clock-label">UTC</div>
-            <div id="utc-time" class="clock-time">--:--</div>
-          </div>
-          <button id="basemap-toggle" class="basemap-toggle" type="button" aria-pressed="true">
-            <span id="basemap-label">Satellite</span>
-          </button>
-        </div>
       </div>
-
-      <p class="credit">
-        Imagery: <a href="https://earthdata.nasa.gov/gibs" rel="noopener">NASA GIBS</a> (Blue Marble &amp; Black Marble).
-        Country outlines: <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a> (public domain).
-        Time-zone lookup: tz-lookup (CC0). Solar position: SunCalc (BSD-2).
-      </p>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

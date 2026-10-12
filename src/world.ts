@@ -80,17 +80,6 @@ function featurePath(geometry: GeoGeometry): string {
   return d;
 }
 
-function graticulePath(): string {
-  let d = '';
-  for (let lng = -180; lng <= 180; lng += 30) {
-    d += `M ${equiX(lng).toFixed(1)} 0 L ${equiX(lng).toFixed(1)} ${H} `;
-  }
-  for (let lat = -60; lat <= 60; lat += 30) {
-    d += `M 0 ${equiY(lat).toFixed(1)} L ${W} ${equiY(lat).toFixed(1)} `;
-  }
-  return d;
-}
-
 function setImageHref(image: SVGElement, href: string): void {
   image.setAttribute('href', href);
   image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href);
@@ -152,10 +141,6 @@ export async function createWorld(
   const ocean = svgEl('rect');
   attr(ocean, { x: '0', y: '0', width: String(W), height: String(H), fill: '#0b2230' });
   flat.appendChild(ocean);
-
-  const grat = svgEl('path');
-  attr(grat, { d: graticulePath(), fill: 'none', stroke: 'rgba(255,255,255,0.14)', 'stroke-width': '1' });
-  flat.appendChild(grat);
 
   const byColor = new Map<string, string>();
   let borderD = '';

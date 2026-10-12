@@ -19,13 +19,18 @@ interface Unprojector {
   unproject(x: number, y: number): { lat: number; lng: number };
 }
 
+export interface HoverController {
+  setEnabled(enabled: boolean): void;
+}
+
 /** Hover readout: local time, offset, sunrise/sunset and solar noon. */
 export function setupHover(
-  container: HTMLElement,
+  container: Element,
   world: Unprojector,
   tooltip: HTMLElement
-): void {
+): HoverController {
   let raf = 0;
+  let enabled = true;
   let last: { x: number; y: number; lat: number; lng: number } | null = null;
 
   function render(): void {
@@ -61,9 +66,11 @@ export function setupHover(
   }
 
   container.addEventListener('mousemove', (event) => {
+    if (!enabled) return;
+    const e = event as MouseEvent;
     const rect = container.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     const point = world.unproject(x, y);
     last = { x, y, lat: point.lat, lng: point.lng };
     if (!raf) raf = requestAnimationFrame(render);
@@ -73,4 +80,14 @@ export function setupHover(
     last = null;
     tooltip.style.opacity = '0';
   });
+
+  return {
+    setEnabled(next: boolean): void {
+      enabled = next;
+      if (!enabled) {
+        last = null;
+        tooltip.style.opacity = '0';
+      }
+    }
+  };
 }

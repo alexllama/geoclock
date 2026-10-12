@@ -16,7 +16,6 @@ function el<T extends Element>(id: string): T {
 }
 
 async function boot(): Promise<void> {
-  const worldEl = el<HTMLDivElement>('world');
   const mapSvg = el<SVGSVGElement>('map-svg');
   const bandSvg = el<SVGSVGElement>('band-svg');
   const overlaySvg = el<SVGSVGElement>('overlay');
@@ -37,22 +36,58 @@ async function boot(): Promise<void> {
 
   const arrows = buildZoneArrows();
   const readouts = new Readouts(viewerTz);
-  setupHover(worldEl, world, tooltip);
+  const hover = setupHover(mapSvg, world, tooltip);
+  const tooltipToggle = el<HTMLButtonElement>('tooltip-toggle');
+  let tooltipOn = false;
+  function applyTooltip(): void {
+    hover.setEnabled(tooltipOn);
+    tooltipToggle.setAttribute('aria-pressed', String(tooltipOn));
+  }
+  tooltipToggle.addEventListener('click', () => {
+    tooltipOn = !tooltipOn;
+    applyTooltip();
+  });
+  applyTooltip();
 
   const basemapToggle = el<HTMLButtonElement>('basemap-toggle');
-  const basemapLabel = el<HTMLElement>('basemap-label');
   let satellite = true;
   function applyBaseMap(): void {
     const id: BaseMapId = satellite ? 'satellite' : 'boundaries';
     world.setBaseMap(id);
-    basemapLabel.textContent = satellite ? 'Satellite' : 'Country boundaries';
     basemapToggle.setAttribute('aria-pressed', String(satellite));
+    basemapToggle.setAttribute(
+      'aria-label',
+      satellite ? 'Base map: satellite imagery (click for country boundaries)' : 'Base map: country boundaries (click for satellite imagery)'
+    );
   }
   basemapToggle.addEventListener('click', () => {
     satellite = !satellite;
     applyBaseMap();
   });
   applyBaseMap();
+
+  const infoBtn = el<HTMLButtonElement>('info-btn');
+  const infoPop = el<HTMLDivElement>('info-pop');
+  const infoWrap = infoBtn.parentElement ?? infoBtn;
+  let infoPinned = false;
+  function setInfo(open: boolean): void {
+    infoPop.hidden = !open;
+    infoBtn.setAttribute('aria-expanded', String(open));
+  }
+  infoWrap.addEventListener('mouseenter', () => setInfo(true));
+  infoWrap.addEventListener('mouseleave', () => {
+    if (!infoPinned) setInfo(false);
+  });
+  infoBtn.addEventListener('click', () => {
+    infoPinned = !infoPinned;
+    setInfo(infoPinned);
+  });
+  document.addEventListener('click', (event) => {
+    if (infoPinned && !infoWrap.contains(event.target as Node)) {
+      infoPinned = false;
+      setInfo(false);
+    }
+  });
 
   function layout(): void {
     const width = world.width();

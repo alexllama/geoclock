@@ -1,12 +1,10 @@
 :root {
   --bg: #060b11;
-  --panel: #0d1a22;
   --edge: #223943;
   --text: #d5e6ef;
-  --muted: #7fa6b5;
+  --muted: #9fbdca;
   --accent: #ffb257;
   --link: #6ab0ff;
-  --chrome: 214px;
 }
 
 * {
@@ -40,48 +38,22 @@ a:hover {
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-}
-
-.topbar {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 1900px;
-  padding: 0 6px;
-}
-.wordmark {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--text);
-}
-.tagline {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  padding: 0.5rem;
 }
 
 .machine {
   width: 100%;
-  max-width: 1900px;
+  max-width: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
 }
 
 /* the hour band + map share one width, so 24h always maps onto 360 degrees */
 .stage {
-  width: min(100%, max(320px, calc((100dvh - var(--chrome)) * 2)));
+  width: min(100%, max(320px, calc((100dvh - 84px) * 2)));
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -117,6 +89,7 @@ a:hover {
   width: 100%;
   aspect-ratio: 2 / 1;
   overflow: hidden;
+  border-radius: 6px;
   background: #0b2230;
 }
 
@@ -165,6 +138,135 @@ a:hover {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.02em;
+}
+
+/* ---------- map controls ---------- */
+
+.map-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding-bottom: 2px;
+}
+
+.info {
+  position: relative;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 14, 20, 0.6);
+  backdrop-filter: blur(6px);
+  color: var(--text);
+  cursor: pointer;
+}
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.icon-btn:hover {
+  color: var(--accent);
+  border-color: rgba(255, 178, 87, 0.5);
+  background: rgba(8, 14, 20, 0.82);
+}
+.icon-btn[aria-expanded='true'] {
+  color: var(--accent);
+  border-color: rgba(255, 178, 87, 0.55);
+}
+#tooltip-toggle:not([aria-pressed='true']) {
+  opacity: 0.5;
+}
+#tooltip-toggle[aria-pressed='true'] {
+  color: #58e08a;
+  border-color: rgba(88, 224, 138, 0.5);
+}
+
+.info-pop {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  width: min(330px, 78vw);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--edge);
+  background: rgba(8, 14, 20, 0.96);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.info-pop[hidden] {
+  display: none;
+}
+.info-pop h2 {
+  margin: 0 0 7px;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+.info-pop p {
+  margin: 0 0 8px;
+}
+.info-pop p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- readout (overlaid on the map) ---------- */
+
+.readout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 26px 14px 10px;
+  background: linear-gradient(to top, rgba(4, 8, 13, 0.88), rgba(4, 8, 13, 0.45) 45%, transparent);
+  pointer-events: auto;
+}
+
+.date {
+  flex: 1 1 auto;
+  color: #eef6fb;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
+}
+
+.clock-block {
+  text-align: right;
+  min-width: 96px;
+}
+.clock-label {
+  color: var(--muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
+}
+.clock-time {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
+}
+.clock-zone {
+  color: var(--muted);
+  font-size: 0.68rem;
+  min-height: 1.05em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
 }
 
 /* hover tooltip */
@@ -220,84 +322,6 @@ a:hover {
   background: #4a6aa8;
 }
 
-/* ---------- readout ---------- */
-
-.readout {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  padding: 2px 6px;
-}
-
-.date {
-  flex: 1 1 auto;
-  color: var(--text);
-  font-size: 1.1rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
-
-.clock-block {
-  text-align: right;
-  min-width: 110px;
-}
-.clock-label {
-  color: var(--muted);
-  font-size: 0.66rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-.clock-time {
-  color: var(--text);
-  font-size: 1.3rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.clock-zone {
-  color: #5c7d8b;
-  font-size: 0.7rem;
-}
-
-.basemap-toggle {
-  font: inherit;
-  font-size: 0.78rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid var(--edge);
-  background: rgba(8, 16, 22, 0.7);
-  color: var(--text);
-  cursor: pointer;
-  white-space: nowrap;
-}
-.basemap-toggle::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--accent);
-}
-.basemap-toggle:hover {
-  border-color: #35586a;
-  color: var(--accent);
-}
-.basemap-toggle[aria-pressed='true']::before {
-  background: #3ddc6b;
-}
-
-.credit {
-  margin: 0;
-  max-width: 1000px;
-  text-align: center;
-  color: #5c7d8b;
-  font-size: 0.68rem;
-  line-height: 1.5;
-}
-
 .err[hidden] {
   display: none;
 }
@@ -305,6 +329,7 @@ a:hover {
 .err {
   position: absolute;
   inset: 0;
+  z-index: 9;
   display: grid;
   place-items: center;
   padding: 2rem;
