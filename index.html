@@ -13,33 +13,26 @@
   </head>
   <body>
     <div id="app" class="app">
-      <div class="machine">
-        <div class="band">
-          <svg id="band-svg" class="band-svg"></svg>
-          <button id="fs" class="fs" type="button" aria-label="Toggle fullscreen" title="Fullscreen">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
-            </svg>
-          </button>
-        </div>
+      <header class="topbar">
+        <h1 class="wordmark">Geoclock</h1>
+        <p class="tagline">live world day / night map</p>
+      </header>
 
-        <div class="world">
-          <div id="map" class="map"></div>
-          <svg id="overlay" class="overlay"></svg>
-          <div class="dial-wrap">
-            <svg id="dial" class="dial"></svg>
+      <div class="machine">
+        <div class="stage">
+          <div class="band">
+            <svg id="band-svg" class="band-svg"></svg>
           </div>
-          <div id="hover" class="hover"></div>
-          <div id="err" class="err" hidden></div>
+          <div id="world" class="world">
+            <svg id="map-svg" class="map-svg" viewBox="0 0 2048 1024" preserveAspectRatio="none"></svg>
+            <svg id="overlay" class="overlay" preserveAspectRatio="none"></svg>
+            <div id="hover" class="hover"></div>
+            <div id="err" class="err" hidden></div>
+          </div>
         </div>
 
         <div class="readout">
-          <div class="date-block">
-            <span id="date-weekday" class="date-weekday"></span>
-            <span id="date-month" class="date-month"></span>
-            <span id="date-day" class="date-day"></span>
-            <span id="date-year" class="date-year"></span>
-          </div>
+          <div id="date" class="date"></div>
           <div class="clock-block">
             <div class="clock-label">Local</div>
             <div id="local-time" class="clock-time">--:--:--</div>
@@ -49,13 +42,16 @@
             <div class="clock-label">UTC</div>
             <div id="utc-time" class="clock-time">--:--</div>
           </div>
+          <button id="basemap-toggle" class="basemap-toggle" type="button" aria-pressed="true">
+            <span id="basemap-label">Satellite</span>
+          </button>
         </div>
       </div>
 
       <p class="credit">
-        World map: <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a> (public domain).
-        Time-zone lookup: tz-lookup (CC0). Solar position: SunCalc (BSD-2). Built with
-        <a href="https://maplibre.org/" rel="noopener">MapLibre GL JS</a>.
+        Imagery: <a href="https://earthdata.nasa.gov/gibs" rel="noopener">NASA GIBS</a> (Blue Marble &amp; Black Marble).
+        Country outlines: <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a> (public domain).
+        Time-zone lookup: tz-lookup (CC0). Solar position: SunCalc (BSD-2).
       </p>
     </div>
     <script type="module" src="/src/main.ts"></script>

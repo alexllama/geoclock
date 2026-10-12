@@ -9,10 +9,7 @@ function fmt(tz: string, options: Intl.DateTimeFormatOptions, date: Date): strin
 }
 
 export class Readouts {
-  private month = el('date-month');
-  private day = el('date-day');
-  private weekday = el('date-weekday');
-  private year = el('date-year');
+  private date = el('date');
   private localTime = el('local-time');
   private localZone = el('local-zone');
   private utcTime = el('utc-time');
@@ -22,13 +19,14 @@ export class Readouts {
   }
 
   update(now: Date): void {
-    this.month.textContent = fmt(this.viewerTz, { month: 'long' }, now);
-    this.day.textContent = fmt(this.viewerTz, { day: 'numeric' }, now);
-    this.weekday.textContent = fmt(this.viewerTz, { weekday: 'long' }, now);
-    this.year.textContent = fmt(this.viewerTz, { year: 'numeric' }, now);
+    this.date.textContent = fmt(
+      this.viewerTz,
+      { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' },
+      now
+    );
     this.localTime.textContent = fmt(
       this.viewerTz,
-      { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false },
+      { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true },
       now
     );
     this.utcTime.textContent = fmt(

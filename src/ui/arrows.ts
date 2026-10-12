@@ -1,4 +1,3 @@
-import type { ClockMap } from '../map/map';
 import type { ZoneArrow } from '../clock/timezones';
 import { formatOffset } from '../clock/timezones';
 
@@ -11,11 +10,11 @@ export function drawArrows(
   svg: SVGSVGElement,
   width: number,
   arrows: ZoneArrow[],
-  clockMap: ClockMap
+  projectX: (lng: number) => number
 ): void {
   const parts: string[] = [];
   for (const arrow of arrows) {
-    const x = clockMap.projectX(arrow.lng);
+    const x = projectX(arrow.lng);
     if (x < -40 || x > width + 40) continue;
     const label = formatOffset(arrow.offset);
     parts.push(

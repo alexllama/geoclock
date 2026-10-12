@@ -1,10 +1,9 @@
 import './styles.css';
 import { subsolarPoint, type SubsolarPoint } from './clock/solar';
 import { buildZoneArrows } from './clock/timezones';
-import { createClockMap, type ClockMap } from './map/map';
+import { createWorld, type World, type BaseMapId } from './world';
 import { renderHourBand } from './ui/hourband';
 import { drawArrows } from './ui/arrows';
-import { createDial } from './ui/dial';
 import { Readouts } from './ui/readouts';
 import { setupHover } from './ui/hover';
 
@@ -17,18 +16,18 @@ function el<T extends Element>(id: string): T {
 }
 
 async function boot(): Promise<void> {
-  const mapEl = el<HTMLDivElement>('map');
+  const worldEl = el<HTMLDivElement>('world');
+  const mapSvg = el<SVGSVGElement>('map-svg');
   const bandSvg = el<SVGSVGElement>('band-svg');
   const overlaySvg = el<SVGSVGElement>('overlay');
-  const dialSvg = el<SVGSVGElement>('dial');
   const tooltip = el<HTMLDivElement>('hover');
   const errEl = el<HTMLDivElement>('err');
 
   let sun: SubsolarPoint = subsolarPoint(new Date());
 
-  let clockMap: ClockMap;
+  let world: World;
   try {
-    clockMap = await createClockMap(mapEl, import.meta.env.BASE_URL, sun);
+    world = await createWorld(mapSvg, import.meta.env.BASE_URL, sun);
   } catch (error) {
     console.error(error);
     errEl.hidden = false;
@@ -38,46 +37,48 @@ async function boot(): Promise<void> {
 
   const arrows = buildZoneArrows();
   const readouts = new Readouts(viewerTz);
-  const dial = createDial(dialSvg);
-  setupHover(mapEl, clockMap.map, tooltip);
+  setupHover(worldEl, world, tooltip);
+
+  const basemapToggle = el<HTMLButtonElement>('basemap-toggle');
+  const basemapLabel = el<HTMLElement>('basemap-label');
+  let satellite = true;
+  function applyBaseMap(): void {
+    const id: BaseMapId = satellite ? 'satellite' : 'boundaries';
+    world.setBaseMap(id);
+    basemapLabel.textContent = satellite ? 'Satellite' : 'Country boundaries';
+    basemapToggle.setAttribute('aria-pressed', String(satellite));
+  }
+  basemapToggle.addEventListener('click', () => {
+    satellite = !satellite;
+    applyBaseMap();
+  });
+  applyBaseMap();
 
   function layout(): void {
-    const width = clockMap.width();
+    const width = world.width();
     renderHourBand(bandSvg, width);
-    overlaySvg.setAttribute('viewBox', `0 0 ${width} ${clockMap.height()}`);
-    drawArrows(overlaySvg, width, arrows, clockMap);
+    overlaySvg.setAttribute('viewBox', `0 0 ${width} ${world.height()}`);
+    drawArrows(overlaySvg, width, arrows, (lng) => world.projectX(lng));
   }
 
-  clockMap.onResize(layout);
+  world.onResize(layout);
   layout();
   readouts.update(new Date());
 
   let lastSecond = -1;
   function frame(): void {
     const now = new Date();
-    dial.update(now, viewerTz);
-
     const second = Math.floor(now.getTime() / 1000);
     if (second !== lastSecond) {
       lastSecond = second;
       sun = subsolarPoint(now);
-      clockMap.setSun(sun);
-      clockMap.setCenterLng(sun.lng);
+      world.setSun(sun);
       readouts.update(now);
-      drawArrows(overlaySvg, clockMap.width(), arrows, clockMap);
+      drawArrows(overlaySvg, world.width(), arrows, (lng) => world.projectX(lng));
     }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-
-  el<HTMLButtonElement>('fs').addEventListener('click', () => {
-    const app = el<HTMLDivElement>('app');
-    if (document.fullscreenElement) {
-      void document.exitFullscreen();
-    } else {
-      app.requestFullscreen?.().catch(() => undefined);
-    }
-  });
 }
 
 void boot();

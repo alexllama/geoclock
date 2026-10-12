@@ -1,4 +1,3 @@
-import type * as maplibregl from 'maplibre-gl';
 import { zoneAt, formatOffset, currentOffsetHours } from '../clock/timezones';
 import { sunEvents, solarElevation } from '../clock/solar';
 
@@ -16,10 +15,14 @@ function hhmm(date: Date | null, tz: string): string {
   return clockTime(tz, date);
 }
 
+interface Unprojector {
+  unproject(x: number, y: number): { lat: number; lng: number };
+}
+
 /** Hover readout: local time, offset, sunrise/sunset and solar noon. */
 export function setupHover(
   container: HTMLElement,
-  map: maplibregl.Map,
+  world: Unprojector,
   tooltip: HTMLElement
 ): void {
   let raf = 0;
@@ -61,8 +64,8 @@ export function setupHover(
     const rect = container.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const lngLat = map.unproject([x, y]);
-    last = { x, y, lat: lngLat.lat, lng: lngLat.lng };
+    const point = world.unproject(x, y);
+    last = { x, y, lat: point.lat, lng: point.lng };
     if (!raf) raf = requestAnimationFrame(render);
   });
 

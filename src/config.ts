@@ -9,4 +9,3 @@ export const ZONE_MIN_LONGITUDES = 6;
 
 // Cosmetic.
 export const HOUR_BAND_HEIGHT = 42;
-export const NIGHT_TINT = 'rgba(6, 12, 34, 0.86)';
